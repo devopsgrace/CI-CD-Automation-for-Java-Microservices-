@@ -1,0 +1,165 @@
+# Java Application CI/CD Pipeline with AWS and DevOps Tools
+![Alt text](architectureDiagram.png)
+This project demonstrates building and deploying a **Java application** using a **DevOps CI/CD pipeline** with **Git, GitHub, Terraform, Jenkins, Maven, Ansible, Docker, and AWS EKS**.  
+The pipeline automates **code version control, infrastructure provisioning, build, containerization, and deployment** to a scalable Kubernetes cluster.
+
+---
+
+## 🚀 Project Overview
+
+The pipeline:
+
+- Uses **Git** for version control and **GitHub** as the central repository.  
+- Provisions AWS infrastructure (**Jenkins, Ansible, and EKS servers**) using **Terraform** on a Windows machine.  
+- Automates builds with **Jenkins** and **Maven**.  
+- Containerizes the application with **Docker** using **Ansible playbooks**.  
+- Deploys to an **AWS EKS cluster** for scalable orchestration.  
+- Ensures **high availability, reliability, and automation** throughout the process.  
+
+---
+
+## ✅ Prerequisites
+
+- **Windows Machine**: For running Terraform  
+- **AWS Account**: With permissions to create IAM users, EC2 instances, S3 buckets, and EKS clusters  
+- **GitHub Account**: For hosting the code repository  
+- **Docker Hub Account**: For storing Docker images  
+
+### Tools Required
+- Git  
+- AWS CLI  
+- Visual Studio Code  
+- Terraform (v1.6.3 or later)  
+- MobaXterm *(optional for SSH)*  
+
+---
+
+## ⚙️ Step-by-Step Setup
+
+### 1. Prepare Windows Machine (Terraform Server)
+- Install Git, AWS CLI, VS Code, and Terraform.  
+- (Optional) Install MobaXterm for SSH.  
+
+### 2. Create IAM Users in AWS
+Create IAM users with appropriate permissions:  
+
+- **terraform-user**: `AmazonEC2FullAccess`, `AmazonS3FullAccess`, `AmazonEKSClusterPolicy`, `AmazonEKSVPCResourceController`  
+- **jenkins-user**: `AmazonEC2FullAccess`  
+- **ansible-user**: `AmazonEC2FullAccess`, `AmazonS3ReadOnlyAccess`  
+- **eks-user**: `AmazonEKSClusterPolicy`, `AmazonEKSVPCResourceController`  
+
+Configure AWS CLI with `terraform-user` credentials:  
+```bash
+aws configure
+```
+### 3. Create S3 Bucket for Terraform State
+```
+aws s3 mb s3://my-terraform-state-bucket --region us-west-2
+```
+### 4. Create AWS Key Pair
+
+Generate key pair (my-key-pair.pem) for SSH access and save locally.
+
+### 5. Write Terraform Code
+
+Provision VPC, subnets, Jenkins server, Ansible server, and EKS cluster.
+Run:
+
+```
+terraform init
+terraform apply
+```
+### 6. Push Java Application to GitHub
+
+Initialize repo and push code:
+```
+git init
+git remote add origin https://github.com/yourusername/my-java-app.git
+git branch -M main
+git push -u origin main
+```
+### 7. Set Up Jenkins
+
+Install Jenkins, Maven, and Java.
+
+Configure Jenkins with GitHub PAT and Maven build steps.
+
+Use Publish Over SSH to send JAR files to the Ansible server.
+
+### 8. Configure Ansible Server
+
+Install Docker and Ansible.
+
+Build and push Docker image to Docker Hub using Ansible playbooks.
+
+### 9. Deploy to AWS EKS
+
+Install and configure kubectl.
+
+Apply Kubernetes manifests with Ansible:
+```
+ansible-playbook -i inventory deploy_k8s.yml
+
+```
+Get service URL:
+```
+kubectl get services
+
+```
+Access the app using the LoadBalancer URL.
+
+📦 Java Application Example
+
+App.java
+```
+public class App {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!\n");
+        System.out.println("DevOps Overview:");
+        System.out.println("DevOps is a cultural and technical practice that bridges development (Dev) and operations (Ops) teams.");
+    }
+}
+```
+
+pom.xml includes Maven compiler and JAR plugins for building the application.
+
+🛠️ Tools & Technologies
+
+Version Control: Git + GitHub
+
+Infrastructure Provisioning: Terraform
+
+CI/CD Orchestration: Jenkins
+
+Build Tool: Maven
+
+Configuration Management: Ansible
+
+Containerization: Docker
+
+Container Orchestration: AWS EKS (Kubernetes)
+
+### 📌 Summary
+
+This pipeline automates the build, containerization, and deployment of a Java application using a robust DevOps toolchain.
+
+Terraform provisions infrastructure.
+
+Jenkins orchestrates builds.
+
+Ansible automates Docker tasks.
+
+EKS ensures scalable deployment.
+
+The app is exposed via a Kubernetes LoadBalancer, showcasing a production-ready CI/CD workflow.
+
+### 🔗 Next Steps
+
+Extend monitoring with Prometheus & Grafana.
+
+Add CI/CD notifications with Slack or Email.
+
+Implement security scanning for Docker images.
+
+
+
